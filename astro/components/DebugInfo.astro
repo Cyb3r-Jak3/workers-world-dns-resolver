@@ -1,0 +1,91 @@
+---
+import { Icon } from 'astro-icon/components';
+---
+
+<style>
+  main {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center; /* Optional: center vertically */
+    width: 100%;
+}
+  #debug-info-json {
+    max-width: 500px;
+    margin: 2rem auto;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.15);
+    border-radius: 12px;
+    padding: 2rem 1.5rem;
+    background: #fff;
+    text-align: center;
+  }
+  #debug-info-json h2 {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  #debug-info-json .debug-row {
+    display: flex;
+    justify-content: space-between;
+    margin: 0.5rem 0;
+    text-align: left;
+  }
+  #debug-info-json .debug-label {
+    font-weight: bold;
+    color: #333;
+  }
+  #debug-info-json .debug-value {
+    color: #555;
+    margin-left: 1rem;
+    word-break: break-all;
+  }
+  #debug-info-json details {
+    margin-top: 1rem;
+    text-align: left;
+  }
+  #debug-info-json pre {
+    background: #f6f8fa;
+    border-radius: 6px;
+    padding: 1rem;
+    overflow-x: auto;
+  }
+</style>
+
+
+<div id="debug-info-json">
+  <h2>Debug Information</h2>
+  <div id="debug-spinner">
+     <Icon name="line-md:loading-alt-loop" />
+    <p>Loading debug information...</p>
+  </div>
+  <div id="debug-content" style="display:none"></div>
+  <script type="module">
+    const spinner = document.getElementById('debug-spinner');
+    const content = document.getElementById('debug-content');
+
+    fetch('/api/v1/debug?format=json')
+      .then(res => res.json())
+      .then(info => {
+        spinner.style.display = 'none';
+        content.style.display = '';
+        content.innerHTML = `
+          <div class="debug-row"><span class="debug-label">Location:</span><span class="debug-value">${info.location}</span></div>
+          <div class="debug-row"><span class="debug-label">Country:</span><span class="debug-value">${info.country}</span></div>
+          <div class="debug-row"><span class="debug-label">Region:</span><span class="debug-value">${info.region}</span></div>
+          <div class="debug-row"><span class="debug-label">Version:</span><span class="debug-value">${info.version}</span></div>
+          <div class="debug-row"><span class="debug-label">App ID:</span><span class="debug-value">${info.app_id}</span></div>
+          <div class="debug-row"><span class="debug-label">Deployment ID:</span><span class="debug-value">${info.deployment_id}</span></div>
+          <div class="debug-row"><span class="debug-label">Node ID:</span><span class="debug-value">${info.node_id}</span></div>
+          <details>
+            <summary>Raw JSON</summary>
+            <pre>${JSON.stringify(info, null, 2)}</pre>
+          </details>
+        `;
+      })
+      .catch(e => {
+        spinner.style.display = 'none';
+        content.style.display = '';
+        content.innerHTML = `<p>Failed to load debug info.</p>`;
+      });
+  </script>
+</div>

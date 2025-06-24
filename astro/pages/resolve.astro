@@ -1,0 +1,148 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+<Layout>
+      <style>
+        h1 {
+        text-align: center;
+        margin-top: 1.5em;
+        margin-bottom: 1em;
+        }
+        form {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+        }
+        input, select {
+          margin: 5px;
+          padding: 10px;
+          width: 300px;
+        }
+        /* Spinner styles */
+        .spinner {
+          display: none;
+          margin: 20px auto;
+          border: 6px solid #f3f3f3;
+          border-top: 6px solid #3245ff;
+          border-radius: 50%;
+          width: 40px;
+          height: 40px;
+          animation: spin 1s linear infinite;
+        }
+        .spinner.active {
+          display: block;
+        }
+        @keyframes spin {
+          0% { transform: rotate(0deg);}
+          100% { transform: rotate(360deg);}
+        }
+      </style>
+      <h1>DNS Lookup</h1>
+      <div>
+        <form id="lookup-form">
+        <input type="text" id="domain" placeholder="Enter domain name" required />
+        <select id="query-type">
+            <option value="" disabled selected>Loading types...</option>
+        </select>
+        <div style="display: flex; align-items: center; gap: 0.5em; margin-bottom: 10px;">
+            <input type="checkbox" id="no-cache" />
+            <label for="no-cache" style="margin: 0;">No cache</label>
+        </div>
+        <button type="submit" style="margin-top: 0.5em;">Lookup</button>
+        </form>
+        <div id="spinner" class="spinner"></div>
+        <ul id="result-list"></ul>
+      </div>
+      <script type="module">
+        const form = document.getElementById('lookup-form');
+        const spinner = document.getElementById('spinner');
+        const resultList = document.getElementById('result-list');
+
+        const queryTypeSelect = document.getElementById('query-type');
+            fetch('/api/v1/dns_types')
+            .then(res => res.json())
+            .then(types => {
+                queryTypeSelect.innerHTML = '';
+                types.forEach(type => {
+                const opt = document.createElement('option');
+                opt.value = type;
+                opt.textContent = type;
+                queryTypeSelect.appendChild(opt);
+                });
+            })
+            .catch(() => {
+                queryTypeSelect.innerHTML = '<option value="">Failed to load types</option>';
+            });
+
+        form.addEventListener('submit', (event) => {
+          event.preventDefault();
+          resultList.innerHTML = '';
+          spinner.classList.add('active');
+
+          const domain = document.getElementById('domain').value;
+          const query = document.getElementById('query-type').value;
+          const noCache = document.getElementById('no-cache').checked;
+
+          fetch(`/api/v1/lookup?domain=${domain}&type=${query}&no_cache=${noCache}`)
+            .then(res => res.json())
+            .then(data => {
+              spinner.classList.remove('active');
+              resultList.innerHTML = '';
+              const meta = document.createElement('li');
+                meta.innerHTML = `<strong>Question:</strong> ${data.question} <br>
+                    <strong>Type:</strong> ${data.type} <br>
+                    <strong>Location:</strong> ${data.location}, ${data.region}, ${data.country} <br>
+                    <strong>Total Duration:</strong> ${data.total_duration_string}`;
+                resultList.appendChild(meta);
+
+                // Show answers
+                if (Array.isArray(data.answers) && data.answers.length > 0) {
+                    const table = document.createElement('table');
+                    table.style.marginTop = '20px';
+                    table.style.borderCollapse = 'collapse';
+                    table.innerHTML = `
+                    <thead>
+                        <tr>
+                        <th style="border:1px solid #ccc;padding:6px;">Server</th>
+                        <th style="border:1px solid #ccc;padding:6px;">Server Address</th>
+                        <th style="border:1px solid #ccc;padding:6px;">Values</th>
+                        <th style="border:1px solid #ccc;padding:6px;">TTL</th>
+                        <th style="border:1px solid #ccc;padding:6px;">Duration</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                    `;
+                    // Sort and fill table
+                    data.answers
+                    .slice()
+                    .sort((a, b) => a.server.localeCompare(b.server))
+                    .forEach(answer => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                        <td style="border:1px solid #ccc;padding:6px;">${answer.server}</td>
+                        <td style="border:1px solid #ccc;padding:6px;">${answer.server_address}</td>
+                        <td style="border:1px solid #ccc;padding:6px;">${answer.values.join(', ')}</td>
+                        <td style="border:1px solid #ccc;padding:6px;">${answer.ttl}</td>
+                        <td style="border:1px solid #ccc;padding:6px;">${answer.duration_string}</td>
+                        `;
+                        table.querySelector('tbody').appendChild(row);
+                    });
+                    // Add table to result list
+                    const tableLi = document.createElement('li');
+                    tableLi.style.listStyle = 'none';
+                    tableLi.appendChild(table);
+                    resultList.appendChild(tableLi);
+                } else {
+                    const li = document.createElement('li');
+                    li.textContent = 'No answers found.';
+                    resultList.appendChild(li);
+                }
+            })
+            .catch(() => {
+              spinner.classList.remove('active');
+              resultList.innerHTML = '<li>Failed to perform DNS lookup.</li>';
+            });
+        });
+      </script>
+</Layout>
+---

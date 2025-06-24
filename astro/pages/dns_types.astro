@@ -1,0 +1,66 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { Icon } from 'astro-icon/components';
+
+---
+
+
+<Layout>
+    <style>
+        main {
+        flex: 1 1 auto;
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+      }
+      h1 {
+        text-align: center;
+        margin-top: 1.5em;
+        margin-bottom: 1em;
+      }
+      ul {
+        padding: 0;
+        list-style: none;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 1.5rem;
+        justify-items: center;
+        width: 100%;
+        max-width: 1100px;
+        margin: 0 auto;
+      }
+    </style>
+    <main>
+    <h1>DNS Types</h1>
+    <div >
+      <ul id="dns-list">
+        <li id="dns-spinner">
+          <div class="dns-spinner-wrapper">
+            <Icon name="line-md:loading-alt-loop" width="32" height="32" />
+            <span style="margin-top:0.5rem;">Loading...</span>
+          </div>
+        </li>
+      </ul>
+    </div>
+    </main>
+    <script type="module">
+
+      fetch('/api/v1/dns_types')
+        .then(res => res.json())
+        .then(/** @param {string[]} data */ (data) => {
+          const ul = document.getElementById('dns-list');
+          ul.innerHTML = '';
+          data.forEach(type => {
+            const li = document.createElement('li');
+            li.style.padding = '0.5em 0';
+            li.style.fontSize = '1.1em';
+            li.textContent = type;
+            ul.appendChild(li);
+          });
+        })
+
+        .catch(() => {
+          document.getElementById('dns-list').innerHTML = '<li>Failed to load DNS servers.</li>';
+        });
+    </script>
+</Layout>

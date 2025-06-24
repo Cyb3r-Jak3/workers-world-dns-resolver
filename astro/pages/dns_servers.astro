@@ -1,0 +1,104 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { Icon } from 'astro-icon/components';
+
+---
+
+
+<Layout>
+    <style>
+      main {
+        flex: 1 1 auto;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+      }
+      h1 {
+      text-align: center;
+      margin-top: 1.5em;
+      margin-bottom: 1em;
+    }
+      ul {
+        padding: 0;
+        list-style: none;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 1.5rem;
+        justify-items: center;
+        width: 100%;
+        max-width: 1100px;
+        margin: 0 auto;
+      }
+      .dns-card {
+        background: #fff;
+        border: 2px solid #1976d2; /* Added a blue border */
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        padding: 1.25rem 2rem;
+        min-width: 220px;
+        max-width: 320px;
+        text-align: center;
+        transition: box-shadow 0.2s, border-color 0.2s;
+        width: 100%;
+        box-sizing: border-box;
+        font-size: 1.15rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        text-align: center;
+      }
+      .dns-card:hover {
+        box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+        border-color: #004ba0; /* Darker blue on hover */
+      }
+      .dns-card-title {
+        font-size: 1.15rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+      }
+      .dns-card-details {
+        font-size: 0.98rem;
+        color: #444;
+        text-align: center;
+      }
+    </style>
+    <main>
+    <h1>DNS Servers</h1>
+      <ul id="dns-list">
+        <li id="dns-spinner">
+          <div class="dns-spinner-wrapper">
+            <Icon name="line-md:loading-alt-loop" width="32" height="32" />
+            <span style="margin-top:0.5rem;">Loading...</span>
+          </div>
+        </li>
+      </ul>
+    </main>
+    <script type="module">
+      /**
+       * @typedef {Object} DNSServer
+       * @property {string} Name
+       * @property {string} Address
+       * @property {number} Port
+       */
+      fetch('/api/v1/dns_servers')
+        .then(res => res.json())
+        .then(/** @param {DNSServer[]} data */ (data) => {
+          const ul = document.getElementById('dns-list');
+          ul.innerHTML = '';
+          data.forEach(server => {
+            const li = document.createElement('li');
+            li.className = 'dns-card';
+            li.innerHTML = `
+              <div class="dns-card-title">${server.Name}</div>
+              <div class="dns-card-details">
+                <strong>Address:</strong> ${server.Address}<br>
+                <strong>Port:</strong> ${server.Port}
+              </div>
+            `;
+            ul.appendChild(li);
+          });
+        })
+        .catch(() => {
+          document.getElementById('dns-list').innerHTML = '<li>Failed to load DNS servers.</li>';
+        });
+    </script>
+</Layout>

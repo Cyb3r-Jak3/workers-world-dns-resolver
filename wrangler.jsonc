@@ -1,0 +1,79 @@
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "world-dns-resolver",
+	"main": "src/index.ts",
+	"compatibility_date": "2025-06-05",
+	"compatibility_flags": ["nodejs_compat"],
+	"observability": {
+		"enabled": true,
+	},
+	"assets": {
+		"directory": "./dist",
+		"html_handling": "drop-trailing-slash",
+	},
+	"containers": [
+		{
+			"name": "world-dns-resolver",
+			"class_name": "RESOLVER",
+			"image": "./container/Dockerfile",
+			"max_instances": 7,
+			// "configuration": {
+			// 	"memory": "4GB",
+			// 	"vcpu": 2,
+			// },
+		},
+	],
+	"durable_objects": {
+		"bindings": [
+			{
+				"name": "RESOLVER",
+				"class_name": "RESOLVER",
+			},
+		],
+	},
+	"migrations": [
+		{
+			"tag": "v2",
+			"new_sqlite_classes": ["RESOLVER"],
+			"deleted_classes": ["MyContainer"]
+		},
+	],
+	"env": {
+		"prd": {
+			"routes": [
+				{
+					"custom_domain": true,
+					"pattern": "world-dns-resolver.cyberjake.xyz",
+				},
+			],
+			"containers": [
+				{
+					"name": "world-dns-resolver-prd",
+					"class_name": "RESOLVER",
+					"image": "./container/Dockerfile",
+					"max_instances": 7,
+					"instance_type": "basic"
+					// "configuration": {
+					// 	"memory": "4GB",
+					// 	"vcpu": 2,
+					// },
+				},
+			],
+			"durable_objects": {
+				"bindings": [
+					{
+						"name": "RESOLVER",
+						"class_name": "RESOLVER",
+					},
+				],
+			},
+			"migrations": [
+				{
+					"tag": "v2",
+					"new_sqlite_classes": ["RESOLVER"],
+					"deleted_classes": ["MyContainer"]
+				},
+			],
+		},
+	},
+}

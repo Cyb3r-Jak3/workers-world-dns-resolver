@@ -1,6 +1,6 @@
 {
 	"name": "world-dns-resolver",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"private": true,
 	"scripts": {
 		"deploy": "astro build && wrangler deploy --env=\"\"",

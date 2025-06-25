@@ -36,6 +36,7 @@ jobs:
       digest: ${{ steps.build.outputs.digest }}
       tags: ${{ steps.meta.outputs.tags }}
       labels: ${{ steps.meta.outputs.labels }}
+      image_version: ${{ steps.meta.outputs.version }}
     steps:
 
       - name: Login to GitHub Container Registry
@@ -45,7 +46,7 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Login to DockerHub
+      - name: Login to My Self-Hosted Registry
         uses: docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772 # v3.4.0
         with:
           registry: ${{ vars.SELF_HOSTED_REGISTRY_URL }}
@@ -82,8 +83,6 @@ jobs:
           file: container/Dockerfile
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          sbom: true
-          provenance: mode=max
 
       - name: GitHub Container Attestation
         uses: actions/attest-build-provenance@e8998f949152b193b063cb0ec769d69d929409be # v2.4.0
@@ -139,8 +138,8 @@ jobs:
 
       - name: Deploy to Cloudflare with Wrangler
         run: |
-          docker pull ghcr.io/cyb3r-jak3/workers-world-dns-resolver:${{ needs.Docker.outputs.digest }}
-          docker tag ghcr.io/cyb3r-jak3/workers-world-dns-resolver:${{ needs.Docker.outputs.digest }} workers-world-dns-resolver:latest
+          docker pull ghcr.io/cyb3r-jak3/workers-world-dns-resolver:${{ needs.Docker.outputs.image_version }}
+          docker tag ghcr.io/cyb3r-jak3/workers-world-dns-resolver:${{ needs.Docker.outputs.image_version }} workers-world-dns-resolver:latest
           pnpm exec wrangler containers push workers-world-dns-resolver:latest --json
           jq '.env.prd.containers[].image = "registry.cloudflare.com/${{ secrets.CF_ACCOUNT_ID }}/workers-world-dns-resolver:latest"' wrangler.jsonc
           pnpm run deploy:prd

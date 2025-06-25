@@ -34,7 +34,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GO111MODULE: on
-    output:
+    outputs:
       digest: ${{ steps.build.outputs.digest }}
       tags: ${{ steps.meta.outputs.tags }}
       labels: ${{ steps.meta.outputs.labels }}

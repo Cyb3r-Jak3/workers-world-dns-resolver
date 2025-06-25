@@ -17,6 +17,7 @@
 		"@cloudflare/vitest-pool-workers": "^0.8.44",
 		"@iconify-json/line-md": "^1.2.8",
 		"@iconify-json/svg-spinners": "^1.2.2",
+		"comment-json": "^4.2.5",
 		"prettier": "3.6.0",
 		"sharp": "^0.34.2",
 		"typescript": "^5.8.3",

@@ -5,6 +5,7 @@ import icon from 'astro-icon';
 export default defineConfig({
 	output: 'static',
 	srcDir: './astro',
+	cacheDir: './.cache',
 	site: 'https://world-dns-resolver.cyberjake.xyz',
 	integrations: [
 		sitemap(),

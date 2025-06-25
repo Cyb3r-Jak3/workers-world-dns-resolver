@@ -137,7 +137,7 @@ jobs:
           docker pull ghcr.io/cyb3r-jak3/workers-world-dns-resolver:${{ needs.Docker.outputs.image_version }}
           docker tag ghcr.io/cyb3r-jak3/workers-world-dns-resolver:${{ needs.Docker.outputs.image_version }} workers-world-dns-resolver:latest
           pnpm exec wrangler containers push workers-world-dns-resolver:latest --json
-          jq '.env.prd.containers[].image = "registry.cloudflare.com/${{ secrets.CF_ACCOUNT_ID }}/workers-world-dns-resolver:latest"' wrangler.jsonc > wrangler.jsonc.tmp && mv wrangler.jsonc.tmp wrangler.jsonc
+          sed '/^\s*\/\//d' wrangler.jsonc | jq '.env.prd.containers[].image = "registry.cloudflare.com/${{ secrets.CF_ACCOUNT_ID }}/workers-world-dns-resolver:latest"' > wrangler.jsonc.tmp && mv wrangler.jsonc.tmp wrangler.jsonc
           pnpm run deploy:prd
         env:
           CLOUDFLARE_API_TOKEN : ${{ secrets.CF_API_TOKEN }}

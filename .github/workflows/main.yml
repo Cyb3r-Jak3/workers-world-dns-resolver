@@ -89,7 +89,7 @@ jobs:
         id: attest
         if: ${{ startsWith(github.ref, 'refs/tags/v') }}
         with:
-          subject-name: ghcr.io/cyb3r-jak3/cloudflare-utils
+          subject-name: ghcr.io/cyb3r-jak3/workers-world-dns-resolver
           subject-digest: ${{ steps.build.outputs.digest }}
           push-to-registry: true
 

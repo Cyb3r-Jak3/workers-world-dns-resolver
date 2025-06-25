@@ -69,13 +69,13 @@ import { Icon } from 'astro-icon/components';
         spinner.style.display = 'none';
         content.style.display = '';
         content.innerHTML = `
-          <div class="debug-row"><span class="debug-label">Location:</span><span class="debug-value">${info.location}</span></div>
-          <div class="debug-row"><span class="debug-label">Country:</span><span class="debug-value">${info.country}</span></div>
-          <div class="debug-row"><span class="debug-label">Region:</span><span class="debug-value">${info.region}</span></div>
-          <div class="debug-row"><span class="debug-label">Version:</span><span class="debug-value">${info.version}</span></div>
-          <div class="debug-row"><span class="debug-label">App ID:</span><span class="debug-value">${info.app_id}</span></div>
-          <div class="debug-row"><span class="debug-label">Deployment ID:</span><span class="debug-value">${info.deployment_id}</span></div>
-          <div class="debug-row"><span class="debug-label">Node ID:</span><span class="debug-value">${info.node_id}</span></div>
+          <div class="debug-row"><span class="debug-label">Location:</span><span class="debug-value"> ${info.location}</span></div>
+          <div class="debug-row"><span class="debug-label">Country:</span><span class="debug-value"> ${info.country}</span></div>
+          <div class="debug-row"><span class="debug-label">Region:</span><span class="debug-value"> ${info.region}</span></div>
+          <div class="debug-row"><span class="debug-label">Version:</span><span class="debug-value"> ${info.version}</span></div>
+          <div class="debug-row"><span class="debug-label">App ID:</span><span class="debug-value"> ${info.app_id}</span></div>
+          <div class="debug-row"><span class="debug-label">Deployment ID:</span><span class="debug-value"> ${info.deployment_id}</span></div>
+          // <div class="debug-row"><span class="debug-label">Node ID:</span><span class="debug-value">${info.node_id}</span></div>
           <details>
             <summary>Raw JSON</summary>
             <pre>${JSON.stringify(info, null, 2)}</pre>

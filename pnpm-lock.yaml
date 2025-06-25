@@ -28,7 +28,7 @@ importers:
         version: 0.8.4(prettier@3.6.0)(typescript@5.8.3)
       hono:
         specifier: ^4.8.2
-        version: 4.8.2
+        version: 4.8.3
     devDependencies:
       '@cloudflare/vitest-pool-workers':
         specifier: ^0.8.44
@@ -1608,8 +1608,8 @@ packages:
   hastscript@9.0.1:
     resolution: {integrity: sha512-g7df9rMFX/SPi34tyGCyUBREQoKkapwdY/T04Qn9TDWfHhAYt4/I0gMVirzK5wEzeUqIjEB+LXC/ypb7Aqno5w==}
 
-  hono@4.8.2:
-    resolution: {integrity: sha512-hM+1RIn9PK1I6SiTNS6/y7O1mvg88awYLFEuEtoiMtRyT3SD2iu9pSFgbBXT3b1Ua4IwzvSTLvwO0SEhDxCi4w==}
+  hono@4.8.3:
+    resolution: {integrity: sha512-jYZ6ZtfWjzBdh8H/0CIFfCBHaFL75k+KMzaM177hrWWm2TWL39YMYaJgB74uK/niRc866NMlH9B8uCvIo284WQ==}
     engines: {node: '>=16.9.0'}
 
   html-escaper@3.0.3:
@@ -4408,7 +4408,7 @@ snapshots:
       property-information: 7.1.0
       space-separated-tokens: 2.0.2
 
-  hono@4.8.2: {}
+  hono@4.8.3: {}
 
   html-escaper@3.0.3: {}
 

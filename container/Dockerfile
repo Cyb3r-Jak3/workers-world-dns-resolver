@@ -1,4 +1,4 @@
-FROM cf-registry.cyberjake.xyz/library/golang:1.24-alpine AS builder
+FROM cf-registry.cyberjake.xyz/library/golang:1.24-alpine@sha256:68932fa6d4d4059845c8f40ad7e654e626f3ebd3706eef7846f319293ab5cb7a AS builder
 # Set destination for COPY
 WORKDIR /app
 
@@ -21,7 +21,7 @@ COPY .git ./
 RUN --mount=type=cache,target=/root/.cache/go-build CGO_ENABLED=0 go build -ldflags "-X main.commit=$(git rev-parse HEAD) -X main.date=$(date -u +%Y-%m-%dT%H:%M:%SZ)" -o /server
 
 
-FROM cf-registry.cyberjake.xyz/library/alpine:latest
+FROM cf-registry.cyberjake.xyz/library/alpine:latest@sha256:8a1f59ffb675680d47db6337b49d22281a139e9d709335b492be023728e11715
 COPY --from=builder /server /server
 EXPOSE 8080
 

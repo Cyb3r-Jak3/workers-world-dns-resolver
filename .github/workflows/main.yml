@@ -32,8 +32,6 @@ concurrency:
 jobs:
   Docker:
     runs-on: ubuntu-latest
-    env:
-      GO111MODULE: on
     outputs:
       digest: ${{ steps.build.outputs.digest }}
       tags: ${{ steps.meta.outputs.tags }}
@@ -90,48 +88,48 @@ jobs:
           subject-digest: ${{ steps.build.outputs.digest }}
           push-to-registry: true
 
-    deploy:
-      runs-on: ubuntu-latest
-      name: Deploy
-      needs: Docker
-      steps:
-        - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+  deploy:
+    runs-on: ubuntu-latest
+    name: Deploy
+    needs: Docker
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
-        # - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
-        #   with:
-        #     node-version: '22'
+      # - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+      #   with:
+      #     node-version: '22'
 
-        - uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
-          name: Install pnpm
-          with:
-            version: 10
-            run_install: false
-        
-        - name: Use Node.js 22
-          uses: actions/setup-node@v4
-          with:
-            node-version: 22
-            cache: 'pnpm'
+      - uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
+        name: Install pnpm
+        with:
+          version: 10
+          run_install: false
+      
+      - name: Use Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'pnpm'
 
-        - name: Install dependencies
-          run: pnpm install
+      - name: Install dependencies
+        run: pnpm install
 
-        # - name: Lint
-        #   if: ${{github.ref_type == 'branch'}}
-        #   run: pnpm run test:lint
+      # - name: Lint
+      #   if: ${{github.ref_type == 'branch'}}
+      #   run: pnpm run test:lint
 
-        # - name: Test
-        #   if: ${{github.ref_type == 'branch'}}
-        #   run: pnpm run test:unit
+      # - name: Test
+      #   if: ${{github.ref_type == 'branch'}}
+      #   run: pnpm run test:unit
 
 
-        - name: Deploy to Cloudflare with Wrangler
-          run: |
-            docker pull ghcr.io/cyb3r-jak3/workers-world-dns-resolver:${{ needs.Docker.outputs.digest }}
-            docker tag ghcr.io/cyb3r-jak3/workers-world-dns-resolver:${{ needs.Docker.outputs.digest }} workers-world-dns-resolver:latest
-            pnpm exec wrangler containers push workers-world-dns-resolver:latest --json
-            jq '.env.prd.containers[].image = "registry.cloudflare.com/${{ secrets.CF_ACCOUNT_ID }}/workers-world-dns-resolver:latest"' wrangler.jsonc
-            pnpm run deploy:prd
-          env:
-            CLOUDFLARE_API_TOKEN : ${{ secrets.CF_API_TOKEN }}
-            CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
+      - name: Deploy to Cloudflare with Wrangler
+        run: |
+          docker pull ghcr.io/cyb3r-jak3/workers-world-dns-resolver:${{ needs.Docker.outputs.digest }}
+          docker tag ghcr.io/cyb3r-jak3/workers-world-dns-resolver:${{ needs.Docker.outputs.digest }} workers-world-dns-resolver:latest
+          pnpm exec wrangler containers push workers-world-dns-resolver:latest --json
+          jq '.env.prd.containers[].image = "registry.cloudflare.com/${{ secrets.CF_ACCOUNT_ID }}/workers-world-dns-resolver:latest"' wrangler.jsonc
+          pnpm run deploy:prd
+        env:
+          CLOUDFLARE_API_TOKEN : ${{ secrets.CF_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}

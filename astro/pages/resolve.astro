@@ -88,12 +88,6 @@ import Layout from '../layouts/Layout.astro';
             .then(data => {
               spinner.classList.remove('active');
               resultList.innerHTML = '';
-              const meta = document.createElement('li');
-                meta.innerHTML = `<strong>Question:</strong> ${data.question} <br>
-                    <strong>Type:</strong> ${data.type} <br>
-                    <strong>Location:</strong> ${data.location}, ${data.region}, ${data.country} <br>
-                    <strong>Total Duration:</strong> ${data.total_duration_string}`;
-                resultList.appendChild(meta);
 
                 // Show answers
                 if (Array.isArray(data.answers) && data.answers.length > 0) {
@@ -132,6 +126,26 @@ import Layout from '../layouts/Layout.astro';
                     tableLi.style.listStyle = 'none';
                     tableLi.appendChild(table);
                     resultList.appendChild(tableLi);
+
+                    // Add meta info at the bottom as a card
+                    const meta = document.createElement('div');
+                    meta.style.marginTop = '20px';
+                    meta.style.padding = '16px';
+                    meta.style.border = '1px solid #3245ff';
+                    meta.style.borderRadius = '8px';
+                    meta.style.background = '#f8faff';
+                    meta.style.boxShadow = '0 2px 8px rgba(50,69,255,0.07)';
+                    meta.style.maxWidth = '600px';
+                    meta.style.marginLeft = 'auto';
+                    meta.style.marginRight = 'auto';
+                    meta.innerHTML = `<strong>Question:</strong> ${data.question} <br>
+                        <strong>Type:</strong> ${data.type} <br>
+                        <strong>Location:</strong> ${data.location}, ${data.region}, ${data.country} <br>
+                        <strong>Total Duration:</strong> ${data.total_duration_string}`;
+                    const metaLi = document.createElement('li');
+                    metaLi.style.listStyle = 'none';
+                    metaLi.appendChild(meta);
+                    resultList.appendChild(metaLi);
                 } else {
                     const li = document.createElement('li');
                     li.textContent = 'No answers found.';

@@ -2,6 +2,7 @@
 	"name": "world-dns-resolver",
 	"version": "0.1.1",
 	"private": true,
+	"type": "module",
 	"scripts": {
 		"deploy": "astro build && wrangler deploy --env=\"\"",
 		"deploy:prd": "astro build && wrangler deploy --env prd",
@@ -13,7 +14,7 @@
 		"format": "prettier --write *.{json,js,ts,astro} src/**/*.{js,ts} test/**/*.{js,ts} wrangler.jsonc"
 	},
 	"devDependencies": {
-		"@cloudflare/vitest-pool-workers": "^0.8.44",
+		"@cloudflare/vitest-pool-workers": "^0.8.49",
 		"@iconify-json/line-md": "^1.2.8",
 		"@iconify-json/svg-spinners": "^1.2.2",
 		"comment-json": "^4.2.5",
@@ -21,15 +22,17 @@
 		"sharp": "^0.34.2",
 		"typescript": "^5.8.3",
 		"vitest": "~3.2.4",
-		"wrangler": "^4.21.1"
+		"wrangler": "^4.23.0"
 	},
 	"dependencies": {
 		"@astrojs/sitemap": "^3.4.1",
-		"@cloudflare/containers": "^0.0.13",
+		"@cloudflare/containers": "^0.0.19",
 		"@cyb3r-jak3/workers-common": "^5.5.1",
-		"astro": "^5.10.1",
+		"astro": "^5.11.0",
 		"astro-icon": "^1.1.5",
 		"astro-seo": "^0.8.4",
-		"hono": "^4.8.2"
+		"chanfana": "^2.8.1",
+		"hono": "^4.8.4",
+		"zod": "^3.25.74"
 	}
 }

@@ -148,17 +148,17 @@ jobs:
       - name: Retag Docker Image
         run: |
           docker pull ghcr.io/cyb3r-jak3/workers-world-dns-resolver:${{ needs.Docker.outputs.image_version }}
-          docker tag ghcr.io/cyb3r-jak3/workers-world-dns-resolver:${{ needs.Docker.outputs.image_version }} workers-world-dns-resolver:latest
-          pnpm exec wrangler containers push workers-world-dns-resolver:latest --json
-          node .github/scripts/update-wrangler-image.js
+          docker tag ghcr.io/cyb3r-jak3/workers-world-dns-resolver:${{ needs.Docker.outputs.image_version }} workers-world-dns-resolver:${{ needs.Docker.outputs.image_version }}
+          pnpm exec wrangler containers push workers-world-dns-resolver:${{ needs.Docker.outputs.image_version }} --json
+          node .github/scripts/update-wrangler-image.cjs 
         env:
           CLOUDFLARE_API_TOKEN : ${{ secrets.CF_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
 
-      - name: Deploy Worker
-        if: ${{ startsWith(github.ref, 'refs/tags/v') }}
-        run: |
-          pnpm run deploy:prd
-        env:
-          CLOUDFLARE_API_TOKEN : ${{ secrets.CF_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
+      # - name: Deploy Worker
+      #   if: ${{ startsWith(github.ref, 'refs/tags/v') }}
+      #   run: |
+      #     pnpm run deploy:prd
+      #   env:
+      #     CLOUDFLARE_API_TOKEN : ${{ secrets.CF_API_TOKEN }}
+      #     CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}

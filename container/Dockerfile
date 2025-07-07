@@ -15,11 +15,11 @@ COPY ./container/go.mod ./container/go.sum ./
 RUN --mount=type=cache,target=/root/.cache/go-build go mod download
 
 # Copy container src
-COPY *.go ./
-# COPY .git ./
+COPY container/*.go ./
+COPY .git ./
 # -X main.commit=$(git rev-parse --short HEAD) 
 # Build
-RUN --mount=type=cache,target=/root/.cache/go-build CGO_ENABLED=0 go build -ldflags "-X main.date=$(date -u +%Y-%m-%dT%H:%M:%SZ)" -o /server
+RUN --mount=type=cache,target=/root/.cache/go-build CGO_ENABLED=0 go build -ldflags "-X main.commit=$(git rev-parse --short HEAD) -X main.date=$(date -u +%Y-%m-%dT%H:%M:%SZ)" -o /server
 
 
 FROM library/alpine:3.22.0@sha256:8a1f59ffb675680d47db6337b49d22281a139e9d709335b492be023728e11715

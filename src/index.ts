@@ -63,56 +63,7 @@ const openapi = fromHono(app, {
 		],
 	},
 });
-
-// app.get("/lookup", async (c) => {
-// 	const { domain, type, no_cache } = c.req.query();
-// 	const cache = caches.default;
-// 	let response = await cache.match(c.req.raw);
-// 	if (response && !no_cache) {
-// 		// If the response is cached and no_cache is not set, return the cached response
-// 		const newHeaders = new Headers(response.headers);
-// 		newHeaders.set("X-Worker-Cache", "HIT");
-// 		return new Response(response.body, {
-// 			status: response.status,
-// 			statusText: response.statusText,
-// 			headers: newHeaders,
-// 		});
-// 	}
-// 	try {
-// 		if (!domain || !type) {
-// 			return c.json({ error: "Missing domain or type query parameters" }, 400);
-// 		}
-// 		const container = await getRandom(c.env.RESOLVER, 3);
-// 		const containerResponse = await container.fetch(c.req.raw);
-// 		const resp: LookupResponse = await containerResponse.json();
-// 		const shortestTTL = getShortestTTL(resp);
-// 		const isNoCache = no_cache === "true";
-// 		const cacheControl = isNoCache
-// 			? "no-cache"
-// 			: typeof shortestTTL === "number" && shortestTTL > 0
-// 				? `public, max-age=${shortestTTL}`
-// 				: "no-cache";
-// 		const response = new Response(JSON.stringify(resp), {
-// 			headers: {
-// 				"Content-Type": "application/json",
-// 				"Cache-Control": cacheControl, // Use the calculated cache control header
-// 			},
-// 		});
-// 		if (!no_cache) {
-// 			c.executionCtx.waitUntil(cache.put(c.req.raw, response.clone()));
-// 		}
-
-// 		return response;
-// 	} catch (err) {
-// 		if (err instanceof Error) {
-// 			console.error("Error fetch:", err.message);
-// 			return new Response(err.message, { status: 500 });
-// 		}
-// 		console.error("Error fetch:", err);
-// 		return new Response("Unknown error", { status: 500 });
-// 	}
-// });
-
+ 
 class LookupEndpoint extends OpenAPIRoute {
 	schema = {
 		request: {

@@ -29,12 +29,11 @@ var (
 )
 
 type DebugResponse struct {
-	Version string `json:"version"`
-	AppID   string `json:"app_id"`
-	NodeID  string `json:"node_id"`
-	Region  string `json:"region"`
-	Location string `json:"location"`
-	Country string `json:"country"`
+	Version      string `json:"version"`
+	AppID        string `json:"app_id"`
+	Region       string `json:"region"`
+	Location     string `json:"location"`
+	Country      string `json:"country"`
 	DeploymentID string `json:"deployment_id"`
 }
 
@@ -43,32 +42,29 @@ func DebugHandler(w http.ResponseWriter, r *http.Request) {
 	location := os.Getenv("CLOUDFLARE_LOCATION")
 	region := os.Getenv("CLOUDFLARE_REGION")
 	AppID := os.Getenv("CLOUDFLARE_APPLICATION_ID")
-	NodeID := os.Getenv("CLOUDFLARE_NODE_ID")
 	DeploymentID := os.Getenv("CLOUDFLARE_DEPLOYMENT_ID")
 	if buildInfo, available := debug.ReadBuildInfo(); available {
 		versionString = fmt.Sprintf("%s (built %s with %s)", commit, date, buildInfo.GoVersion)
 	}
 	query := r.URL.Query()
-	if query.Get("format") == "json" {
-		response := DebugResponse{
-			Version:     versionString,
-			AppID:       AppID,
-			NodeID:      NodeID,
-			Region:      region,
-			Location:    location,
-			Country:     country,
-			DeploymentID: DeploymentID,
-		}
-		JSONResponse(w, response)
+	if query.Get("format") == "text" {
+		w.Header().Set("Content-Type", "text/plain; charset=utf-8")
+		_, _ = fmt.Fprintf(w, "Hi, I'm a container running in %s, %s, which is part of %s", location, country, region)
+		_, _ = fmt.Fprintf(w, "with the following build information:\n")
+		_, _ = fmt.Fprintf(w, "Version: %s\n", versionString)
+		_, _ = fmt.Fprintf(w, "App ID: %s\n", AppID)
+		_, _ = fmt.Fprintf(w, "Deployment ID: %s\n", DeploymentID)
 		return
 	}
-	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
-	_, _ = fmt.Fprintf(w, "Hi, I'm a container running in %s, %s, which is part of %s", location, country, region)
-	_, _ = fmt.Fprintf(w, "with the following build information:\n")
-	_, _ = fmt.Fprintf(w, "Version: %s\n", versionString)
-	_, _ = fmt.Fprintf(w, "App ID: %s\n", AppID)
-	_, _ = fmt.Fprintf(w, "Deployment ID: %s\n", DeploymentID)
-	_, _ = fmt.Fprintf(w, "Cloudflare Node ID: %s\n", NodeID)
+	response := DebugResponse{
+		Version:      versionString,
+		AppID:        AppID,
+		Region:       region,
+		Location:     location,
+		Country:      country,
+		DeploymentID: DeploymentID,
+	}
+	JSONResponse(w, response)
 }
 
 func main() {
@@ -81,8 +77,8 @@ func main() {
 	v1mux := http.NewServeMux()
 	v1mux.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
 		if terminate {
-			w.WriteHeader(400)
-			_, _ = w.Write([]byte("draining"))
+			w.WriteHeader(503)
+			_, _ = w.Write([]byte("Service Unavailable"))
 			return
 		}
 		_, _ = w.Write([]byte("ok"))
@@ -210,7 +206,7 @@ func DNSTypesEndpoint(w http.ResponseWriter, r *http.Request) {
 	// This function can be used to return the DNS types supported by the container.
 	// For now, it returns a placeholder string.
 	dnsTypes := make([]string, 0, len(dnsTypes))
-	for k, _ := range dns.StringToType {
+	for k := range dns.StringToType {
 		dnsTypes = append(dnsTypes, k)
 	}
 	sort.Strings(dnsTypes)
@@ -220,7 +216,6 @@ func DNSTypesEndpoint(w http.ResponseWriter, r *http.Request) {
 func DNSServerEndpoint(w http.ResponseWriter, r *http.Request) {
 	// This function can be used to return the DNS servers supported by the container.
 	// For now, it returns a placeholder string.
-	fmt.Println("Fetching DNS servers")
 	JSONResponse(w, dnsServers)
 }
 

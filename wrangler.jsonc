@@ -35,7 +35,7 @@
 		{
 			"tag": "v2",
 			"new_sqlite_classes": ["RESOLVER"],
-			"deleted_classes": ["MyContainer"]
+			// "deleted_classes": ["MyContainer"]
 		},
 	],
 	"env": {
@@ -52,7 +52,7 @@
 					"class_name": "RESOLVER",
 					"image": "./container/Dockerfile",
 					"max_instances": 7,
-					"instance_type": "basic"
+					"instance_type": "basic",
 					// "configuration": {
 					// 	"memory": "4GB",
 					// 	"vcpu": 2,
@@ -71,7 +71,7 @@
 				{
 					"tag": "v2",
 					"new_sqlite_classes": ["RESOLVER"],
-					"deleted_classes": ["MyContainer"]
+					// "deleted_classes": ["MyContainer"]
 				},
 			],
 		},

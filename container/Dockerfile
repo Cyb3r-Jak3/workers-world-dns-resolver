@@ -15,7 +15,7 @@ COPY ./container/go.mod ./container/go.sum ./
 RUN --mount=type=cache,target=/root/.cache/go-build go mod download
 
 # Copy container src
-COPY *.go ./
+COPY ./container/*.go ./
 COPY .git ./
 # Build
 RUN --mount=type=cache,target=/root/.cache/go-build CGO_ENABLED=0 go build -ldflags "-X main.commit=$(git rev-parse --short HEAD) -X main.date=$(date -u +%Y-%m-%dT%H:%M:%SZ)" -o /server

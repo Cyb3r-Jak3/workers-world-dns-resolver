@@ -10,6 +10,9 @@ const optomizedLogo = await getImage({
 	format: "webp",
 	quality: 80,
 });
+
+import { version } from '../../package.json';
+
 ---
 <!doctype html>
 <html lang="en">
@@ -46,7 +49,7 @@ const optomizedLogo = await getImage({
         </nav>
 		<slot />
 	<footer>
-            <pre>Version: v1 | <a href="/debug">Debug Info</a> | <a href="/sitemap-index.xml">Sitemap</a></pre>
+            <pre>Version: {version} | <a href="/debug">Debug Info</a> | <a href="/sitemap-index.xml">Sitemap</a> | <a href="/api/v1/docs">API Docs</a></pre>
         </footer>
 	</body>
 </html>

@@ -145,7 +145,7 @@ jobs:
         run: |
           docker pull ghcr.io/cyb3r-jak3/workers-world-dns-resolver:${{ needs.Docker.outputs.image_version }}
           docker tag ghcr.io/cyb3r-jak3/workers-world-dns-resolver:${{ needs.Docker.outputs.image_version }} workers-world-dns-resolver:latest
-          pnpm exec wrangler containers push workers-world-dns-resolver:latest --json
+          pnpm exec wrangler containers push workers-world-dns-resolver:latest
           node .github/scripts/update-wrangler-image.js
         env:
           CLOUDFLARE_API_TOKEN : ${{ secrets.CF_API_TOKEN }}

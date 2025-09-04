@@ -15,7 +15,7 @@ COPY ./container/go.mod ./container/go.sum ./
 RUN --mount=type=cache,target=/root/.cache/go-build go mod download
 
 # Copy container src
-COPY container/*.go ./
+COPY ./container/*.go ./
 COPY .git ./
 # -X main.commit=$(git rev-parse --short HEAD) 
 # Build
